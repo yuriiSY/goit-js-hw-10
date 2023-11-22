@@ -6,9 +6,12 @@ import { fetchBreeds, fetchAllBreeds } from './cat-api';
 const div = document.querySelector('.cat-info');
 const select = document.querySelector('.breed-select');
 const loader = document.querySelector('.loader');
+const errorMessage = document.querySelector('.error');
 
 fetchAllBreeds()
   .then(data => {
+    console.log(data);
+    errorMessage.classList.add('hidden');
     select.innerHTML = createOptionMarkup(data);
     new SlimSelect({
       select: '#single',
@@ -21,6 +24,9 @@ fetchAllBreeds()
       'Oops! Something went wrong! Try reloading the page!'
     );
     console.log(err);
+    loader.classList.replace('loader', 'hidden');
+    errorMessage.classList.remove('hidden');
+    select.innerHTML = '';
   });
 
 function createOptionMarkup(arr) {
@@ -30,6 +36,7 @@ function createOptionMarkup(arr) {
 }
 
 select.addEventListener('change', function (evnt) {
+  errorMessage.classList.add('hidden');
   loader.classList.replace('hidden', 'loader');
   div.classList.add('hidden');
   const selectValue = evnt.target.value;
@@ -43,6 +50,9 @@ select.addEventListener('change', function (evnt) {
       Notiflix.Notify.failure(
         'Oops! Something went wrong! Try reloading the page!'
       );
+      div.innerHTML = '';
+      loader.classList.replace('loader', 'hidden');
+      errorMessage.classList.remove('hidden');
       console.log(err);
     });
 });
